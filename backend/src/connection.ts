@@ -1,10 +1,14 @@
-import { createConnection, Connection, ConnectionOptions } from 'typeorm';
-import 'dotenv/config'
-let connection: Connection;
+import { Connection, createConnection, getConnectionManager } from 'typeorm';
+import 'dotenv/config';
 
 export const connectToDatabase = async () => {
-  if (!connection) {
-    const connectionOptions: ConnectionOptions = {
+  const manager = getConnectionManager();
+  let connection: Connection;
+
+  if (manager.has('default')) {
+    connection = manager.get('default');
+  } else {
+    connection = await createConnection({
       type: 'postgres',
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT) || 5432,
@@ -19,8 +23,8 @@ export const connectToDatabase = async () => {
         connectionLimit: 10,
         queueLimit: 0,
       },
-    };
-    connection = await createConnection(connectionOptions);
+    });
   }
+
   return connection;
 };
