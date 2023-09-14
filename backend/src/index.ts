@@ -11,8 +11,6 @@ app.use(express.json());
 connectToDatabase()
   .then((connection) => {
     console.log('Connection established');
-    
-    
   })
   .catch((error) => {
     console.error('Connect failed with error: ', error);
