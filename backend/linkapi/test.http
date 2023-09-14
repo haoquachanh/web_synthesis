@@ -1,1 +1,20 @@
 GET http://localhost:3000/api/user/all
+
+###
+GET http://localhost:3000/api/card/all
+
+###
+POST http://localhost:3000/api/card
+Content-Type: application/json
+
+{
+    "name": "DARK MAGICIAN",
+    "type": "monster",
+    "effect": "None",
+    "atk": 2500,
+    "def": 2100,
+    "info": "A legendary wizard with formidable power.",
+    "lvl": 7,
+    "rarity": "Ultra Rare",
+    "buff": 0
+}
