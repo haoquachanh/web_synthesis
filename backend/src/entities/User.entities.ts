@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 import { Role } from './Role.entities';
+import { Favorite } from './Favorite.entities';
 
 @Entity()
 export class User {
@@ -14,4 +15,8 @@ export class User {
 
   @ManyToOne(() => Role, role => role.users)
   role: Role;
+
+  @ManyToMany(() => Favorite, { cascade: true })
+  @JoinTable()
+  favorites: Favorite[];
 }

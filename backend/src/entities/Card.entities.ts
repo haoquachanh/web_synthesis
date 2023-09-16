@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
 import { CardImage } from './CardImage.entities';
+import { Favorite } from './Favorite.entities';
 
 @Entity()
 export class Card {
@@ -36,4 +37,8 @@ export class Card {
   @OneToOne(() => CardImage)
   @JoinColumn()
   image: CardImage;
+
+  @OneToOne(() => Favorite)
+  @JoinColumn()
+  favorite: Favorite;
 }

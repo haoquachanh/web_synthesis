@@ -4,29 +4,49 @@ import { CardImage } from '../entities/CardImage.entities';
 import { connectToDatabase } from '../connection';
 
 class CardController {
-  async getAllCards(req: Request, res: Response) {
-    try {
-      const connection = await connectToDatabase(); 
+    async getAllCards(req: Request, res: Response) {
+      try {
+        const connection = await connectToDatabase(); 
+        const cardRepository = connection.getRepository(Card);
 
-      const cardRepository = connection.getRepository(Card);
-  
-      const cards = await cardRepository
-        .createQueryBuilder('card')
-        .leftJoinAndSelect('card.image', 'cardimage')
-        .getMany()
-      res.status(200).json({
-        err: 0,
-        mes: cards.length>0 ? "Got all cards." : "No have any cards.",
-        data: cards
-      })
-    } 
-    catch (error) {
-      res.status(500).json({
-        err: -1,
-        mes: "Iternal Error",
-      });
+        const page = parseInt(req.query.page as string) || 1;
+        const pageSize = parseInt(req.query.pageSize as string) || 10;
+        const type = req.query.type as string; // Tham số để lọc theo loại
+        const sortParam = req.query.sort as string; // Tham số để sắp xếp
+        const skip = (page - 1) * pageSize;
+        
+        console.log(page, pageSize, skip, sortParam)
+        const queryBuilder = await cardRepository
+          .createQueryBuilder('card')
+          .leftJoinAndSelect('card.image', 'cardimage')
+          .skip(skip)
+          .take(pageSize)
+        
+        if (type) {
+          queryBuilder.where('card.type = :type', {type})
+        }
+
+        if (sortParam){
+          const [field, order] = sortParam.split(':');
+          queryBuilder.orderBy(`card.${field}`, order as 'ASC' | 'DESC');
+        }
+
+        const cards= await queryBuilder.getMany();
+
+        res.status(200).json({
+          err: 0,
+          mes: cards.length>0 ? "Got all cards." : "No have any cards.",
+          pageSize: pageSize,
+          data: cards
+        })
+      } 
+      catch (error) {
+        res.status(500).json({
+          err: -1,
+          mes: "Iternal Error: " + error.message,
+        });
+      }
     }
-  }
 
   async getCardById(req: Request, res: Response) {
     try {
