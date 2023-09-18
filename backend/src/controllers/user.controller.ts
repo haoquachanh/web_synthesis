@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import { User } from '../entities/User.entities';
 import { Role } from '../entities/Role.entities';
 import { connectToDatabase } from '../connection';
+import { dataSource } from '../datasource';
 
 class UserController {
   async getAllUsers(req: Request, res: Response) {
     try {
-      const connection = await connectToDatabase(); 
 
-      const userRepository = connection.getRepository(User);
+      const userRepository = dataSource.getRepository(User);
   
       const users = await userRepository
         .createQueryBuilder('user')

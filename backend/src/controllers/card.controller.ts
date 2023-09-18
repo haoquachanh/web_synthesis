@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { Card } from '../entities/Card.entities';
 import { CardImage } from '../entities/CardImage.entities';
-import { connectToDatabase } from '../connection';
+// import { connectToDatabase } from '../connection';
+import { dataSource } from '../datasource';
 
 class CardController {
     async getAllCards(req: Request, res: Response) {
       try {
-        const connection = await connectToDatabase(); 
-        const cardRepository = connection.getRepository(Card);
+        const cardRepository = dataSource.getRepository(Card);
 
         const page = parseInt(req.query.page as string) || 1;
         const pageSize = parseInt(req.query.pageSize as string) || 10;
@@ -59,9 +59,8 @@ class CardController {
 
   async createCard(req: Request, res: Response) {
     try {
-      const connection = await connectToDatabase()
-      const cardRepository = connection.getRepository(Card);
-      const cardImageRepository = connection.getRepository(CardImage);
+      const cardRepository = dataSource.getRepository(Card);
+      const cardImageRepository = dataSource.getRepository(CardImage);
   
       //Create card image first
       const cardImage = new CardImage();

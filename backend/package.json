@@ -4,8 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --exec ts-node src/index.ts"
+    "start": "nodemon --exec ts-node src/index.ts",
+    "typeormold": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+    "typeorm": "ts-node -P ./tsconfig.typeorm.json -d ./src/db/CliDataSource.ts",
+
+    "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run -d ./src/datasource.ts",
+    "migration:revert": "ts-node ./node_modules/typeorm/cli.js migration:revert -d ./src/datasource.ts",
+    "schema:sync": "",
+    "migration:show": "npm run typeorm migration:show -- -d ./src/datasource.ts",
+    "migration:generate": "npm run typeorm migration:generate -- -d ./src/datasource.ts",
+    
+    "migration:create": "npm run typeorm migration:create"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +26,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@nestjs/typeorm": "^10.0.0",
     "express": "^4.18.2",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",

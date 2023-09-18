@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import { Favorite } from '../entities/Favorite.entities';
 import { User } from '../entities/User.entities';
-import { connectToDatabase } from '../connection';
+// import { connectToDatabase } from '../connection';
+import { dataSource } from '../datasource';
 
 class FavoriteController {
     async getAllFavorites(req: Request, res: Response) {
       try {
         console.log(req.query)
-        const connection = await connectToDatabase(); 
-        const favoriteRepository = connection.getRepository(Favorite);
+        const favoriteRepository = dataSource.getRepository(Favorite);
 
         const page = parseInt(req.query.page as string) || 1;
         const pageSize = parseInt(req.query.pageSize as string) || 10;
@@ -51,17 +51,32 @@ class FavoriteController {
 
   async getFavoriteById(req: Request, res: Response) {
     try {
-      let id=parseInt(req.params?.id as string)
-      const connection = await connectToDatabase(); 
-      const favoriteRepository = connection.getRepository(Favorite);
-      const userRepository = connection.getRepository(User);
+      let id = parseInt(req.params?.id as string);
 
-      const user = await userRepository.findOneBy({id: id});
-
-      const favorites = await favoriteRepository.find({
-        where: { users: user },
-        relations: ['card'], 
-      });
+      const userRepository = dataSource.getRepository(User);
+      
+      // Tìm người dùng theo ID
+      const user = await userRepository.findOne({ where: { id } });
+      
+      if (user) {
+        await userRepository
+          .createQueryBuilder('user')
+          .relation(User, 'favorites')
+          .of(user)
+          .loadMany();
+      
+        console.log(user.favorites);
+      }
+      
+      res.status(200).json({
+        err: 0,
+        mes: "Got ",
+        data: user.favorites
+      })
+      // const favorites = await favoriteRepository.find({
+      //   where: { users: user },
+      //   relations: ['card'], 
+      // });
     } 
     catch (error) {
       console.log(error.message);
@@ -71,8 +86,7 @@ class FavoriteController {
 
   async createFavorite(req: Request, res: Response) {
     try {
-      const connection = await connectToDatabase()
-      const favoriteRepository = connection.getRepository(Favorite);
+      const favoriteRepository = dataSource.getRepository(Favorite);
       await favoriteRepository.save({});
   
       res.status(201).json({

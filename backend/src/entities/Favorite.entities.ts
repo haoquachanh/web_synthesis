@@ -7,7 +7,7 @@ export class Favorite {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, user => user.favorites)
   users: User[];
 
   @OneToOne(() => Card)

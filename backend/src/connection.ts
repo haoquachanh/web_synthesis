@@ -17,8 +17,12 @@ export const connectToDatabase = async () => {
       database: process.env.DB_DATABASE,
       synchronize: false,
       logging: true,
-      entities: ['src/entities/*.ts'],
-      migrations: ['src/migrations/*.ts'],
+      entities: [__dirname + '/entities/*.entity.ts'], // Đổi đường dẫn entities này
+      migrations: [__dirname + '/migrations/*.ts'], // Đổi đường dẫn migrations này
+      // cli: {
+      //   "entitiesDir": "src/entities", 
+      //   "migrationsDir": "src/migrations"
+      // },
       extra: {
         connectionLimit: 10,
         queueLimit: 0,

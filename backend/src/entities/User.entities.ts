@@ -16,7 +16,7 @@ export class User {
   @ManyToOne(() => Role, role => role.users)
   role: Role;
 
-  @ManyToMany(() => Favorite, { cascade: true })
+  @ManyToMany(() => Favorite)
   @JoinTable()
   favorites: Favorite[];
 }

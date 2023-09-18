@@ -1,22 +1,13 @@
 import express from 'express';
 import router from './routes';
 import { connectToDatabase } from './connection';
-
+import { dataSource } from './datasource';
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-
-connectToDatabase()
-  .then((connection) => {
-    console.log('Connection established');
-  })
-  .catch((error) => {
-    console.error('Connect failed with error: ', error);
-  });
-
-
+dataSource
 app.use('/api', router)
 
 app.get('/', (req, res) => {
