@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
-import { CardImage } from './CardImage.entities';
-import { Favorite } from './Favorite.entities';
+import { CardImage } from './CardImage.entity';
+import { Favorite } from './Favorite.entity';
 
 @Entity()
 export class Card {

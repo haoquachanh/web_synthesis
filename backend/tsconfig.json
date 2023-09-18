@@ -2,11 +2,15 @@
     "compilerOptions": {
       "target": "ES6",
       "module": "commonjs",
+      "allowJs": true,
       "esModuleInterop": true,
+      "outDir": "./dist",
+      "rootDir": "./src",
       "experimentalDecorators": true,
       "emitDecoratorMetadata": true
       // ...
-    },
+    }
+    
     // ...
     
-  }
+}

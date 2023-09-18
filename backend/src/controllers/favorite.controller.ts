@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Favorite } from '../entities/Favorite.entities';
-import { User } from '../entities/User.entities';
+import { Favorite } from '../entities/Favorite.entity';
+import { User } from '../entities/User.entity';
 // import { connectToDatabase } from '../connection';
 import { dataSource } from '../datasource';
 
@@ -9,6 +9,7 @@ class FavoriteController {
       try {
         console.log(req.query)
         const favoriteRepository = dataSource.getRepository(Favorite);
+        console.log(favoriteRepository)
 
         const page = parseInt(req.query.page as string) || 1;
         const pageSize = parseInt(req.query.pageSize as string) || 10;

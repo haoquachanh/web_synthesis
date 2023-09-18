@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
-import { Card } from './Card.entities';
+import { Card } from './Card.entity';
 
 @Entity({name: 'cardimage'})
 export class CardImage {

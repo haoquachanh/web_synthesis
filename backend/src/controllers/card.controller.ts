@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Card } from '../entities/Card.entities';
-import { CardImage } from '../entities/CardImage.entities';
+import { Card } from '../entities/Card.entity';
+import { CardImage } from '../entities/CardImage.entity';
 // import { connectToDatabase } from '../connection';
 import { dataSource } from '../datasource';
 

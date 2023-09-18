@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import { User } from '../entities/User.entities';
-import { Role } from '../entities/Role.entities';
-import { connectToDatabase } from '../connection';
+import { User } from '../entities/User.entity';
+import { Role } from '../entities/Role.entity';
 import { dataSource } from '../datasource';
 
 class UserController {
@@ -20,6 +19,7 @@ class UserController {
         data: users
       })
     } catch (error) {
+      console.log(error)
       res.status(500).json({
         err: -1,
         mes: "Iternal Error",
