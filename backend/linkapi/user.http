@@ -1,4 +1,8 @@
-GET http://localhost:3000/api/user/all
+GET http://localhost:3000/routes-list
+
+
+###
+GET http://localhost:3000/api/user/all?roleParam=1
 
 
 ###

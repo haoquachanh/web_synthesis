@@ -4,20 +4,57 @@ import { Role } from '../entities/Role.entity';
 import { dataSource } from '../datasource';
 import { Favorite } from '../entities/Favorite.entity';
 import { isNotEmptyObject, isObject } from 'class-validator';
+import { Brackets } from 'typeorm/query-builder/Brackets';
 
 class UserController {
   async getAllUsers(req: Request, res: Response) {
     try {
 
       const userRepository = dataSource.getRepository(User);
-  
-      const users = await userRepository
+
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+      const roleParam = req.query.roleParam as string; // Tham số để lọc theo loại
+      const sortParam = req.query.sort as string; // Tham số để sắp xếp
+      const searchKeyword = req.query.search as string;
+      const skip = (page - 1) * pageSize;
+      
+      console.log(page, pageSize, skip, sortParam)
+      const queryBuilder = await userRepository
         .createQueryBuilder('user')
         .leftJoinAndSelect('user.role', 'role')
-        .getMany()
+        .skip(skip)
+        .take(pageSize)
+      
+      if (roleParam) {
+        queryBuilder.where('user.role = :roleParam', {roleParam})
+      }
+
+      if (sortParam){
+        const [field, order] = sortParam.split(':');
+        queryBuilder.orderBy(`user.${field}`, order as 'ASC' | 'DESC');
+      }
+
+      if (searchKeyword) {
+        queryBuilder.andWhere(new Brackets(qb => {
+          qb.where('LOWER(user.username) LIKE LOWER(:searchKeyword)', {
+            searchKeyword: `%${searchKeyword.toLowerCase()}%`,
+          });
+          qb.orWhere('LOWER(user.fullname) LIKE LOWER(:searchKeyword)', {
+            searchKeyword: `%${searchKeyword.toLowerCase()}%`,
+          });
+          qb.orWhere('LOWER(user.email) LIKE LOWER(:searchKeyword)', {
+            searchKeyword: `%${searchKeyword.toLowerCase()}%`,
+          });
+        }));
+      }
+      
+
+      const users= await queryBuilder.getMany();
+
       res.status(200).json({
         err: 0,
-        mes: users.length>0 ? "Got all users." : "No have any users.",
+        mes: users.length>0 ? `Got ${users.length} users.` : "No have any users.",
         data: users
       })
     } catch (error) {
@@ -151,14 +188,20 @@ class UserController {
       let userRepository = dataSource.getRepository(User)
       let favoriteRepository = dataSource.getRepository(Favorite)
 
-      let user = await userRepository.findOneOrFail({where: { id: id},
-      relations: ['favorites']})
+      try{
 
-      res.status(200).json({
-        err: 0,
-        mes: "ok",
-        data: user
-      })
+        let user = await userRepository.findOneOrFail({where: { id: id},
+          relations: ['favorites']})
+        res.status(200).json({
+          err: 0,
+          mes: "ok",
+          data: user
+        })
+      }
+      catch(error){ res.status(201).json({
+        err: 1,
+        mes: "User not found!",
+      })}
 
     } catch (error) {
       console.log(error.message)

@@ -3,6 +3,7 @@ import { Card } from '../entities/Card.entity';
 import { CardImage } from '../entities/CardImage.entity';
 // import { connectToDatabase } from '../connection';
 import { dataSource } from '../datasource';
+import { Brackets } from 'typeorm';
 
 class CardController {
     async getAllCards(req: Request, res: Response) {
@@ -13,6 +14,11 @@ class CardController {
         const pageSize = parseInt(req.query.pageSize as string) || 10;
         const type = req.query.type as string; // Tham số để lọc theo loại
         const sortParam = req.query.sort as string; // Tham số để sắp xếp
+        const searchKeyword = req.query.search as string;
+        const maxDef =req.query.maxDef as string;
+        const minDef =req.query.minDef as string;
+        const maxAtk =req.query.maxAtk as string;
+        const minAtk =req.query.minAtk as string;
         const skip = (page - 1) * pageSize;
         
         console.log(page, pageSize, skip, sortParam)
@@ -31,11 +37,42 @@ class CardController {
           queryBuilder.orderBy(`card.${field}`, order as 'ASC' | 'DESC');
         }
 
+        if (searchKeyword) {
+          queryBuilder.andWhere(new Brackets(qb => {
+            qb.where('LOWER(card.name) LIKE LOWER(:searchKeyword)', {
+              searchKeyword: `%${searchKeyword.toLowerCase()}%`,
+            });
+            qb.orWhere('LOWER(card.info) LIKE LOWER(:searchKeyword)', {
+              searchKeyword: `%${searchKeyword.toLowerCase()}%`,
+            });
+            qb.orWhere('LOWER(card.effect) LIKE LOWER(:searchKeyword)', {
+              searchKeyword: `%${searchKeyword.toLowerCase()}%`,
+            });
+          }));
+        }
+        
+        
+        if (minAtk) {
+          queryBuilder.andWhere('card.atk >= :minAtk', { minAtk: parseInt(minAtk) });
+        }
+
+        if (maxAtk) {
+          queryBuilder.andWhere('card.atk <= :maxAtk', { maxAtk: parseInt(maxAtk) });
+        }
+
+        if (minDef) {
+          queryBuilder.andWhere('card.def >= :minDef', { minDef: parseInt(minDef) });
+        }
+
+        if (maxDef) {
+          queryBuilder.andWhere('card.def <= :maxDef', { maxDef: parseInt(maxDef) });
+        }
+
         const cards= await queryBuilder.getMany();
 
         res.status(200).json({
           err: 0,
-          mes: cards.length>0 ? "Got all cards." : "No have any cards.",
+          mes: cards.length>0 ? `Got ${cards.length} cards.` : "No have any cards.",
           pageSize: pageSize,
           data: cards
         })

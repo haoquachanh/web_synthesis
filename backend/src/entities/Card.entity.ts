@@ -15,6 +15,9 @@ export class Card {
 
   @Column()
   effect: string;
+  
+  @Column()
+  attribute: string;
 
   @Column({ nullable: true })
   atk: number;
