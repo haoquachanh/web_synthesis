@@ -14,4 +14,6 @@ userRouter.put('/:id', userController.updateUser);
 
 userRouter.delete('/:id', userController.deleteUser);
 
+userRouter.get('/favorites/:id', userController.getFavorite)
+
 export default userRouter;
