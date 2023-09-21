@@ -4,7 +4,7 @@
 
 Public SERVER for QUICK TEST: _https://synthesis-web.onrender.com_
 
-INSTALL: < The prerequisite : Nodejs was installed>
+# INSTALL: < The prerequisite : Nodejs was installed>
 
 - Clone this repository `git clone https://github.com/haoquachanh/web_synthesis`
 
