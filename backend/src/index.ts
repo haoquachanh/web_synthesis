@@ -2,14 +2,16 @@ import 'reflect-metadata'
 import express from 'express';
 import router from './routes';
 import { print } from './controllers/getActiveRoute';
-const app = express();
+const app = express(); 
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 
 app.use('/api', router)
 
 app.get('/routes-list',(req,res)=>{
+
   let list=[]
   app._router.stack.forEach((layer) => {
     const values = print([], layer);

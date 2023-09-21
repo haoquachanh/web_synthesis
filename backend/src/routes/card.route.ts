@@ -1,7 +1,10 @@
 import { Router } from 'express';
 import CardController from '../controllers/card.controller';
+import { verifyJWT } from '../middlewares/verifyJWT';
 
 const cardRouter = Router();
+
+// cardRouter.use(verifyJWT)
 const cardController = new CardController();
 
 cardRouter.get('/all', cardController.getAllCards);

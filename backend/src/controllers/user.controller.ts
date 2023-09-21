@@ -86,6 +86,7 @@ class UserController {
 
   async createUser(req: Request, res: Response) {
     try {
+      console.log(req.body);
       let { username, password, email, fullname, avt } = req.body;
       if (!(username && password && email && fullname && avt)) res.status(400).send()
       let user= new User(username,password,fullname,email,avt)

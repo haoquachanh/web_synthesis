@@ -5,6 +5,9 @@ import 'dotenv/config';
 export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
   const token = <string>req.headers["auth"];
   let jwtPayload;
+  if (!token) {
+    return res.status(400).json({ error: "Missing JWT token" });
+  }
   
   try {
     jwtPayload = <any>jwt.verify(token, process.env.JWT_SECRET);
@@ -17,11 +20,11 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
 
   //The token is valid for 1 hour
   //We want to send a new token on every request
-  const { userId, username } = jwtPayload;
-  const newToken = jwt.sign({ userId, username }, process.env.JWT_SECRET, {
-    expiresIn: "1h"
-  });
-  res.setHeader("token", newToken);
+  // const { userId, username } = jwtPayload;
+  // const newToken = jwt.sign({ userId, username }, process.env.JWT_SECRET, {
+  //   expiresIn: "1h"
+  // });
+  // res.setHeader("token", newToken);
 
   //Call the next middleware or controller
   next();

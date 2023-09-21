@@ -98,8 +98,13 @@ class CardController {
     try {
       const cardRepository = dataSource.getRepository(Card);
       const cardImageRepository = dataSource.getRepository(CardImage);
+      console.log(">>>>>>", req.body)
+      if (!(req.body.name)) return res.status(400).json({
+        err:1,
+        mes: "You must put card name in body."
+      })
   
-      //Create card image first
+      //Create card image first`
       const cardImage = new CardImage();
       //need a middleware upload card image and return its link
       cardImage.linkimg = "link_return_by_middleware_upload_card_image";
@@ -117,7 +122,7 @@ class CardController {
         mes: 'Created successfully',
       });
     } catch (error) {
-      console.error('Lỗi khi tạo lá bài:', error);
+      console.error('Error: ', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   }
