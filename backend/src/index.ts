@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import express from 'express';
 import router from './routes';
 import { print } from './controllers/getActiveRoute';
+import { renderRoutesList } from './routes-list';
 const app = express(); 
 const port = process.env.PORT || 3000;
 
@@ -17,7 +18,8 @@ app.get('/routes-list',(req,res)=>{
     const values = print([], layer);
     list.push(...values);
   })
-  res.status(200).json({list})
+  let htmlpage=renderRoutesList(list)
+  res.send(htmlpage)
 })
 app.get('*', (req, res) => {res.send("SERVER IS RUNNING")})
 
