@@ -1,3 +1,5 @@
+> > > This project has stopped to switch to using Typescript with NestJS
+
 # Backend: Programing language: TYPESCRIPT, orm: TYPEORM, database: POSTGRES
 
 # Frontend: //coming soon (REACTJS or NESTJS)
